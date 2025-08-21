@@ -1,0 +1,15 @@
+-- Set the current database and schema
+USE DATABASE JOBDASH;
+USE SCHEMA ANALYTICS;
+
+-- Add created_at column to FACT_JOB_APPLICATION table
+ALTER TABLE FACT_JOB_APPLICATION
+ADD COLUMN created_at TIMESTAMP_NTZ;
+
+-- Add created_at column to FACT_STUDY_SESSIONS table
+ALTER TABLE FACT_STUDY_SESSIONS
+ADD COLUMN created_at TIMESTAMP_NTZ;
+
+-- (Optional) Verify schema after update
+DESC TABLE FACT_JOB_APPLICATION;
+DESC TABLE FACT_STUDY_SESSIONS;
