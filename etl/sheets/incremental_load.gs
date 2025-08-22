@@ -6,56 +6,66 @@ function onEdit(e) {
   var sheetName = sheet.getName();
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
-  // helper: find column index by header name
   function colIndex(name) {
-    return headers.indexOf(name) + 1; // +1 because indexOf is 0-based
+    return headers.indexOf(name) + 1;
+  }
+
+  // date format function
+  function formatDate(value) {
+    if (!value) return "";
+    var dateObj = (typeof value === "object") ? value : new Date(value);
+    return Utilities.formatDate(dateObj, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+  }
+
+  function fixRowDates(createdAtCol, lastModifiedCol) {
+    var createdVal = sheet.getRange(row, createdAtCol).getValue();
+    var lastModifiedVal = sheet.getRange(row, lastModifiedCol).getValue();
+
+    if (createdVal) {
+      sheet.getRange(row, createdAtCol).setValue(formatDate(createdVal));
+    }
+    sheet.getRange(row, lastModifiedCol).setValue(formatDate(new Date()));
   }
 
   // -------------------
-  // Case 1: Job Applicants Sheet
+  // applications sheet
   // -------------------
   if (sheetName === "applications") {
     var idCol = colIndex("app_id");
     var createdAtCol = colIndex("created_at");
     var lastModifiedCol = colIndex("last_modified");
 
-    // assign app_id if empty
     if (!sheet.getRange(row, idCol).getValue()) {
       var lastRow = sheet.getLastRow();
-      var nextId = lastRow - 1; // exclude header
+      var nextId = lastRow - 1;
       sheet.getRange(row, idCol).setValue(nextId);
 
-      // set created_at only if empty
       if (!sheet.getRange(row, createdAtCol).getValue()) {
-        sheet.getRange(row, createdAtCol).setValue(new Date());
+        sheet.getRange(row, createdAtCol).setValue(formatDate(new Date()));
       }
     }
 
-    // always update last_modified
-    sheet.getRange(row, lastModifiedCol).setValue(new Date());
+    fixRowDates(createdAtCol, lastModifiedCol);
   }
 
   // -------------------
-  // Case 2: Study Logs Sheet
+  // study_logs sheet
   // -------------------
   if (sheetName === "study_logs") {
     var idCol = colIndex("study_id");
     var createdAtCol = colIndex("created_at");
     var lastModifiedCol = colIndex("last_modified");
 
-    // assign study_id if empty
     if (!sheet.getRange(row, idCol).getValue()) {
       var lastRow = sheet.getLastRow();
-      var nextId = lastRow - 1; // exclude header
+      var nextId = lastRow - 1;
       sheet.getRange(row, idCol).setValue(nextId);
 
-      // set created_at only if empty
       if (!sheet.getRange(row, createdAtCol).getValue()) {
-        sheet.getRange(row, createdAtCol).setValue(new Date());
+        sheet.getRange(row, createdAtCol).setValue(formatDate(new Date()));
       }
     }
 
-    // always update last_modified
-    sheet.getRange(row, lastModifiedCol).setValue(new Date());
+    fixRowDates(createdAtCol, lastModifiedCol);
   }
 }
