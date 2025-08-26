@@ -1,15 +1,34 @@
--- Set the current database and schema
+-- ================================
+-- Switch to Analytics schema
+-- ================================
 USE DATABASE JOBDASH;
 USE SCHEMA ANALYTICS;
 
--- Add created_at column to FACT_JOB_APPLICATION table
+-- Add created_at to FACT tables
 ALTER TABLE FACT_JOB_APPLICATION
-ADD COLUMN created_at TIMESTAMP_NTZ;
+ADD COLUMN IF NOT EXISTS CREATED_AT TIMESTAMP_NTZ;
 
--- Add created_at column to FACT_STUDY_SESSIONS table
 ALTER TABLE FACT_STUDY_SESSIONS
-ADD COLUMN created_at TIMESTAMP_NTZ;
+ADD COLUMN IF NOT EXISTS CREATED_AT TIMESTAMP_NTZ;
 
--- (Optional) Verify schema after update
+-- Verify
 DESC TABLE FACT_JOB_APPLICATION;
 DESC TABLE FACT_STUDY_SESSIONS;
+
+
+-- ================================
+-- Switch to RAW schema
+-- ================================
+USE DATABASE JOBDASH;
+USE SCHEMA RAW;
+
+-- Add created_at to RAW tables
+ALTER TABLE JOB_APPLICATIONS_RAW
+ADD COLUMN IF NOT EXISTS CREATED_AT TIMESTAMP_NTZ;
+
+ALTER TABLE STUDY_LOG_RAW
+ADD COLUMN IF NOT EXISTS CREATED_AT TIMESTAMP_NTZ;
+
+-- Verify
+DESC TABLE JOB_APPLICATIONS_RAW;
+DESC TABLE STUDY_LOG_RAW;
