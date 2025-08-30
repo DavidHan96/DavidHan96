@@ -1,80 +1,88 @@
 -- =========================================================
--- FACT LOAD SCRIPT
--- Load data from STG tables into FACT tables
--- Database: JOBDASH.ANALYTICS
+-- FACT LOAD SCRIPT (Job Applications)
 -- =========================================================
-
--- ======================================
--- FACT: Job Applications
--- ======================================
 CREATE OR REPLACE TABLE JOBDASH.ANALYTICS.FACT_JOB_APPLICATION AS
-SELECT
-    ROW_NUMBER() OVER (ORDER BY a.APP_ID)        AS APPLICATION_KEY,
-    a.APP_ID                                     AS APP_ID,
+WITH base AS (
+  SELECT
+    a.APP_ID,
+    a.APPLICATION_STATUS,
+    a.INTERVIEW_STATUS,
+    a.REFERRAL,
+    a.COMPENSATION,
+    a.IS_DELETED,
+    a.CREATED_AT,
+    a.COMPANY_NAME,
+    a.INDUSTRY,
+    a.ROLE_TITLE,
+    a.WORK_ARRANGEMENT,
+    a.CITY,
+    a.STATE,
+    a.SOURCE,
+    a.DATE_APPLIED,
+    a.LAST_MODIFIED
+  FROM JOBDASH.STG.JOB_APPLICATIONS_STG a
+),
+
+joined AS (
+  SELECT
+    b.APP_ID,
 
     -- Dimension lookups
-    c.COMPANY_KEY                                AS COMPANY_KEY,
-    r.ROLE_KEY                                   AS ROLE_KEY,
-    w.WORK_KEY                                   AS WORK_KEY,
-    l.LOCATION_KEY                               AS LOCATION_KEY,
-    s.SOURCE_KEY                                 AS SOURCE_KEY,
+    c.COMPANY_KEY,
+    r.ROLE_KEY,
+    w.WORK_KEY,
+    l.LOCATION_KEY,
+    s.SOURCE_KEY,
+    d1.DATE_KEY AS APPLIED_DATE_KEY,
+    d2.DATE_KEY AS LAST_MODIFIED_DATE_KEY,
 
-    -- Dates
-    d1.DATE_KEY                                  AS APPLIED_DATE_KEY,
-    d2.DATE_KEY                                  AS LAST_MODIFIED_DATE_KEY,
+    -- Attributes (consistent naming)
+    b.APPLICATION_STATUS,
+    b.INTERVIEW_STATUS,
+    b.REFERRAL,
+    b.COMPENSATION,
+    b.IS_DELETED,
+    b.CREATED_AT
 
-    -- Attributes
-    a.APPLICATION_STATUS                         AS STATUS,
-    a.INTERVIEW_STATUS                           AS INTERVIEW_STATUS,
-    a.REFERRAL                                   AS REFERRAL,
-    a.COMPENSATION                               AS COMPENSATION,
-    a.IS_DELETED                                 AS IS_DELETED,
+  FROM base b
+  LEFT JOIN JOBDASH.ANALYTICS.DIM_COMPANY c
+    ON b.COMPANY_NAME = c.COMPANY_NAME
+   AND b.INDUSTRY     = c.INDUSTRY
+  LEFT JOIN JOBDASH.ANALYTICS.DIM_ROLE r
+    ON b.ROLE_TITLE = r.ROLE_TITLE
+  LEFT JOIN JOBDASH.ANALYTICS.DIM_WORK_ARRANGEMENT w
+    ON b.WORK_ARRANGEMENT = w.WORK_ARRANGEMENT
+  LEFT JOIN JOBDASH.ANALYTICS.DIM_LOCATION l
+    ON b.CITY  = l.CITY
+   AND b.STATE = l.STATE
+  LEFT JOIN JOBDASH.ANALYTICS.DIM_SOURCE s
+    ON b.SOURCE = s.SOURCE_NAME
+  LEFT JOIN JOBDASH.ANALYTICS.DIM_DATE d1
+    ON b.DATE_APPLIED = d1.FULL_DATE
+  LEFT JOIN JOBDASH.ANALYTICS.DIM_DATE d2
+    ON b.LAST_MODIFIED = d2.FULL_DATE
 
-    -- Audit
-    a.CREATED_AT                                 AS CREATED_AT
+  -- Guarantee 1 row per APP_ID
+  QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY b.APP_ID
+    ORDER BY b.LAST_MODIFIED NULLS LAST, b.CREATED_AT DESC
+  ) = 1
+)
 
-FROM JOBDASH.STG.JOB_APPLICATIONS_STG a
-LEFT JOIN JOBDASH.ANALYTICS.DIM_COMPANY c
-    ON a.COMPANY_NAME = c.COMPANY_NAME
-LEFT JOIN JOBDASH.ANALYTICS.DIM_ROLE r
-    ON a.ROLE_TITLE = r.ROLE_TITLE
-LEFT JOIN JOBDASH.ANALYTICS.DIM_WORK_ARRANGEMENT w
-    ON a.WORK_ARRANGEMENT = w.WORK_ARRANGEMENT
-LEFT JOIN JOBDASH.ANALYTICS.DIM_LOCATION l
-    ON a.CITY = l.CITY
-   AND a.STATE = l.STATE
-LEFT JOIN JOBDASH.ANALYTICS.DIM_SOURCE s
-    ON a.SOURCE = s.SOURCE_NAME
-LEFT JOIN JOBDASH.ANALYTICS.DIM_DATE d1
-    ON a.DATE_APPLIED = d1.FULL_DATE
-LEFT JOIN JOBDASH.ANALYTICS.DIM_DATE d2
-    ON a.LAST_MODIFIED = d2.FULL_DATE;
-
--- ======================================
--- FACT: Study Sessions
--- ======================================
-CREATE OR REPLACE TABLE JOBDASH.ANALYTICS.FACT_STUDY_SESSIONS AS
 SELECT
-    ROW_NUMBER() OVER (ORDER BY s.STUDY_ID)      AS SESSION_KEY,
-    s.STUDY_ID                                   AS STUDY_ID,
-
-    -- Dimension lookups
-    t.TOPIC_KEY                                  AS TOPIC_KEY,
-    p.PROVIDER_KEY                               AS PROVIDER_KEY,
-    d.DATE_KEY                                   AS SESSION_DATE_KEY,
-
-    -- Measures & attributes
-    s.PROBLEMS_SOLVED                            AS PROBLEMS_SOLVED,
-    s.HOURS                                      AS HOURS,
-    s.DIFFICULTY                                 AS DIFFICULTY,
-
-    -- Audit
-    s.CREATED_AT                                 AS CREATED_AT
-
-FROM JOBDASH.STG.STUDY_LOG_STG s
-LEFT JOIN JOBDASH.ANALYTICS.DIM_TOPIC t 
-    ON s.TOPIC = t.TOPIC
-LEFT JOIN JOBDASH.ANALYTICS.DIM_PROVIDER p 
-    ON s.PROVIDER = p.PROVIDER_NAME   -- ✅ fixed to match actual DIM_PROVIDER design
-LEFT JOIN JOBDASH.ANALYTICS.DIM_DATE d 
-    ON s.SESSION_DATE = d.FULL_DATE;
+  ROW_NUMBER() OVER (ORDER BY APP_ID) AS APPLICATION_KEY,
+  APP_ID,
+  COMPANY_KEY,
+  ROLE_KEY,
+  WORK_KEY,
+  LOCATION_KEY,
+  SOURCE_KEY,
+  APPLIED_DATE_KEY,
+  LAST_MODIFIED_DATE_KEY,
+  APPLICATION_STATUS,
+  INTERVIEW_STATUS,
+  REFERRAL,
+  COMPENSATION,
+  IS_DELETED,
+  CREATED_AT
+FROM joined;
