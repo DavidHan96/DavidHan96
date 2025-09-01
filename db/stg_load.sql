@@ -48,8 +48,12 @@ SELECT
     TRIM(TOPIC)                            AS TOPIC,
     TRIM(PROVIDER)                         AS PROVIDER,
     TRIM(DIFFICULTY)                       AS DIFFICULTY,
-    PROBLEMS_SOLVED                        AS PROBLEMS_SOLVED,
-    HOURS                                  AS HOURS,
+
+    -- Numerics (replace NULL with 0 for stability)
+    COALESCE(PROBLEMS_SOLVED, 0)           AS PROBLEMS_SOLVED,
+    COALESCE(HOURS, 0)                     AS HOURS,
+
+    -- Dates / Timestamps
     SESSION_DATE                           AS SESSION_DATE,
     CREATED_AT                             AS CREATED_AT
 FROM JOBDASH.RAW.STUDY_LOG_RAW;
