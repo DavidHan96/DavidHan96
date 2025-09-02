@@ -1,12 +1,24 @@
 # 📊 David’s Analytics Dashboards Portfolio
 
 <p align="left">
-  <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white"></a>
-  <a href="https://www.snowflake.com/"><img alt="Snowflake" src="https://img.shields.io/badge/Snowflake-Data%20Warehouse-29B5E8?logo=snowflake&logoColor=white"></a>
-  <a href="https://developers.google.com/sheets/api"><img alt="Google Sheets API" src="https://img.shields.io/badge/Google%20Sheets%20API-Enabled-1A73E8?logo=google&logoColor=white"></a>
-  <a href="https://lookerstudio.google.com/"><img alt="Looker Studio" src="https://img.shields.io/badge/Looker%20Studio-Reports-1A73E8?logo=google&logoColor=white"></a>
-  <a href="https://pandas.pydata.org/"><img alt="pandas" src="https://img.shields.io/badge/pandas-150458?logo=pandas&logoColor=white"></a>
-  <a href="https://git-scm.com/"><img alt="Git" src="https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white"></a>
+  <a href="https://www.python.org/">
+    <img alt="Python" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
+  </a>
+  <a href="https://www.snowflake.com/">
+    <img alt="Snowflake" src="https://img.shields.io/badge/Snowflake-Data%20Warehouse-29B5E8?logo=snowflake&logoColor=white">
+  </a>
+  <a href="https://developers.google.com/sheets/api">
+    <img alt="Google Sheets API" src="https://img.shields.io/badge/Google%20Sheets%20API-Enabled-1A73E8?logo=google&logoColor=white">
+  </a>
+  <a href="https://lookerstudio.google.com/">
+    <img alt="Looker Studio" src="https://img.shields.io/badge/Looker%20Studio-Reports-1A73E8?logo=google&logoColor=white">
+  </a>
+  <a href="https://pandas.pydata.org/">
+    <img alt="pandas" src="https://img.shields.io/badge/pandas-Data%20Frames-150458?logo=pandas&logoColor=white">
+  </a>
+  <a href="https://git-scm.com/">
+    <img alt="Git" src="https://img.shields.io/badge/Git-Versioned%20ETL-F05032?logo=git&logoColor=white">
+  </a>
   <img alt="Refresh" src="https://img.shields.io/badge/Refresh-06%3A30%20daily-success">
   <img alt="Status" src="https://img.shields.io/badge/Status-Active-2EA44F">
 </p>
@@ -18,24 +30,18 @@ End-to-end analytics project demonstrating:
 ---
 
 ## 📑 Table of Contents
-- [🎯 Why I Built This](#🎯-why-i-built-this)
-- [🚀 Live Dashboards](#🚀-live-dashboards)
-  - [🔹 Job Applications Analytics](#🔹-job-applications-analytics)
-  - [🔹 Study Log Analytics](#🔹-study-log-analytics)
-- [🧱 Architecture](#🧱-architecture)
-  - [🧰 Pipeline](#🧰-pipeline)
-  - [📥 Source Data & ETL](#📥-source-data--etl)
-  - [🧪 Looker Studio Deployment](#🧪-looker-studio-deployment)
-  - [🏛️ Warehouse Schema](#🏛️-warehouse-schema)
-- [✨ Features](#✨-features)
-  - [Common](#common)
-  - [Job Applications Analytics](#job-applications-analytics)
-  - [Study Log Analytics](#study-log-analytics)
-- [🛠️ Tech Stack](#🛠️-tech-stack)
-- [📂 Repository Structure](#📂-repository-structure)
-- [⚙️ Reproduce Locally](#⚙️-reproduce-locally)
-- [🧭 Roadmap](#🧭-roadmap)
-- [👤 My Role & Contributions](#👤-my-role--contributions)
+- [🎯 Why I Built This](#-why-i-built-this)
+- [🚀 Live Dashboards](#-live-dashboards)
+- [🧱 Architecture](#-architecture)
+- [📥 Source Data & ETL](#-source-data--etl)
+- [🧪 Looker Studio Deployment](#-looker-studio-deployment-dev--prod)
+- [🏛️ Warehouse Schema](#-warehouse-schema-snowflake)
+- [✨ Features](#-features)
+- [🛠️ Tech Stack](#-tech-stack)
+- [📂 Repository Structure](#-repository-structure)
+- [⚙️ Reproduce Locally](#-reproduce-locally-quick-start)
+- [🧭 Roadmap](#-roadmap)
+- [👤 My Role & Contributions](#-my-role--contributions)
 
 ---
 
@@ -53,16 +59,18 @@ To show hands-on, production-ready skills across the data lifecycle:
 ### 🔹 Job Applications Analytics
 [![Job Applications Analytics](dashboards/job_applications/Job_Applications_Analytics.png)](https://lookerstudio.google.com/reporting/05a43d81-625f-4196-8616-76beb82abf3a "Open in Looker Studio")
 
-Key views:  
+Key views:
 - Smart Rankings (companies, counts, averages)  
 - Application Funnel (Applied → Interviewed → Offer)  
 - Weekly & cumulative trends  
-- Role/Industry distributions  
+- Role / Industry distributions  
+
+---
 
 ### 🔹 Study Log Analytics
 [![Study Log Analytics](dashboards/study_log/Study_Log_Analytics.png)](https://lookerstudio.google.com/reporting/edeb330e-5a46-4eda-b1e1-1941c14eb872 "Open in Looker Studio")
 
-Key views:  
+Key views:
 - Daily study hours + 7-day moving averages  
 - Category share donut with labeled %  
 - Smart Rankings (Hours / Problems / Difficulty)  
@@ -72,52 +80,53 @@ Key views:
 
 ## 🧱 Architecture
 
-### 🧰 Pipeline
-**Flow:**  
+**Pipeline:**  
 `Google Sheets → ETL (Python) → Snowflake (RAW → STG → FACT/VIEWs) → Looker Studio`
 
-```txt
+```text
 Raw study & jobs  -->  etl/sheets/load_initial.py   # first bootstrap from Sheets API
                     etl/sheets/incremental_load.py # idempotent upserts (created_at/last_modified)
 
-STG:  db/stg_load.sql   # typing, cleaning, conforming
-FACT: db/fact_load.sql  # application & study-session grains
-VIEW: db/VW_STUDY_LOG.sql  # reporting-friendly columns & metrics
+STG:  db/stg_load.sql          # typing, cleaning, conforming
+FACT: db/fact_load.sql         # application & study-session grains
+VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns & metrics
 📥 Source Data & ETL
 <p align="center"> <img src="dashboards/job_applications/application_google_sheet.png" alt="Job Applications — Google Sheet preview" width="48%" /> <img src="dashboards/study_log/study_log_google_sheet.png" alt="Study Log — Google Sheet preview" width="48%" /> </p>
 Google Sheets API (service account) + Python (gspread, google-auth, pandas)
 
 Snowflake Python Connector for bulk load / upsert
 
-Initial load (load_initial.py) seeds RAW; incremental (incremental_load.py) loads only new/changed rows via created_at / last_modified
+Initial load (load_initial.py) seeds RAW tables; incremental (incremental_load.py) loads only new/changed rows via created_at / last_modified
 
-Idempotent (dedupe on natural keys), strict typing, date normalization
+Idempotent behavior (dedupe on natural keys), strict types, date normalization
 
-RAW→STG: casting/cleanup/mappings → STG→FACT: STAR schema with conformed dimensions
+RAW→STG applies casting, trimming, and mappings; STG→FACT assembles star schema with conformed dimensions
 
-🧪 Looker Studio Deployment
+🧪 Looker Studio Deployment (Dev → Prod)
 Build & validate in Dev with live Snowflake connector
 
 Convert to Data Extract sources and copy to Prod dashboard
 
-Schedule auto-refresh daily at 06:30 (local) for extracts
+Schedule auto-refresh daily at 06:30 (local)
 
-Result: Prod refreshes each morning; Dev remains live for iteration
+Result: Prod dashboards refresh automatically each morning; Dev remains live for iteration
 
-🏛️ Warehouse Schema
-
+🏛️ Warehouse Schema (Snowflake)
 <details> <summary><b>Object inventory</b> (click to expand)</summary>
-txt
-Copy code
 Schemas
-- RAW: JOB_APPLICATIONS_RAW, STUDY_LOG_RAW
-- STG: JOB_APPLICATIONS_STG, STUDY_LOG_STG
-- ANALYTICS (tables):
-  DIM_COMPANY, DIM_DATE, DIM_LOCATION, DIM_PROVIDER,
-  DIM_ROLE, DIM_SOURCE, DIM_TOPIC, DIM_WORK_ARRANGEMENT,
-  FACT_JOB_APPLICATION, FACT_STUDY_SESSIONS
-- ANALYTICS (views):
-  VW_JOB_APPLICATIONS, VW_JOB_APPLICATIONS_AGG, VW_JOB_APPLICATIONS_FUNNEL, VW_STUDY_LOG
+
+RAW: JOB_APPLICATIONS_RAW, STUDY_LOG_RAW
+
+STG: JOB_APPLICATIONS_STG, STUDY_LOG_STG
+
+ANALYTICS (tables):
+DIM_COMPANY, DIM_DATE, DIM_LOCATION, DIM_PROVIDER,
+DIM_ROLE, DIM_SOURCE, DIM_TOPIC, DIM_WORK_ARRANGEMENT,
+FACT_JOB_APPLICATION, FACT_STUDY_SESSIONS
+
+ANALYTICS (views):
+VW_JOB_APPLICATIONS, VW_JOB_APPLICATIONS_AGG, VW_JOB_APPLICATIONS_FUNNEL, VW_STUDY_LOG
+
 </details>
 mermaid
 Copy code
@@ -134,7 +143,9 @@ Automated ingestion from Google Sheets
 
 Snowflake warehouse (window functions, rollups)
 
-Dev→Prod via Looker Data Extracts, 06:30 daily refresh
+Dev→Prod promotion via Looker Data Extracts
+
+Scheduled refresh (06:30 daily)
 
 Versioned SQL/ETL and reproducible setup
 
@@ -166,7 +177,7 @@ Visualization: Looker Studio (Data Extract for Prod)
 Version Control: GitHub
 
 📂 Repository Structure
-txt
+text
 Copy code
 .
 ├─ dashboards/
@@ -193,8 +204,8 @@ Copy code
 ├─ sheets/               # local dev helpers (optional)
 ├─ data/                 # placeholders / examples (gitkept)
 └─ README.md
-⚙️ Reproduce Locally
-Snowflake env
+⚙️ Reproduce Locally (Quick Start)
+Snowflake Environment
 bash
 Copy code
 export SNOWFLAKE_ACCOUNT=...
@@ -204,7 +215,7 @@ export SNOWFLAKE_WAREHOUSE=...
 export SNOWFLAKE_ROLE=...
 export SNOWFLAKE_DATABASE=JOBDASH
 export SNOWFLAKE_SCHEMA=ANALYTICS
-Google Sheets creds
+Google Sheets Credentials
 Provide the Sheet IDs and service-account JSON in etl/sheets/*.py (or via env vars).
 
 Run loaders
@@ -212,7 +223,7 @@ bash
 Copy code
 python etl/sheets/load_initial.py       # bootstrap
 python etl/sheets/incremental_load.py   # incremental updates
-SQL modeling order
+Modeling order
 sql
 Copy code
 -- staging
@@ -231,7 +242,7 @@ Convert to Data Extract sources
 Copy to Prod dashboard & set 06:30 daily refresh
 
 🧭 Roadmap
-MCP integration (Model Context Protocol): NL → parameterized SQL copilot
+MCP integration (Model Context Protocol): natural language → parameterized SQL copilot
 
 dbt migration (tests, docs, environments)
 
