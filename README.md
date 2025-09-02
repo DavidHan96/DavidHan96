@@ -90,7 +90,7 @@ Raw study & jobs  -->  etl/sheets/load_initial.py   # first bootstrap from Sheet
 STG:  db/stg_load.sql          # typing, cleaning, conforming
 FACT: db/fact_load.sql         # application & study-session grains
 VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns & metrics
-
+``` 
 ---
 
 ## 📥 Source Data & ETL
@@ -144,6 +144,7 @@ graph TD
   FACT --> VIEW[Views (VW_*)]
   VIEW --> Looker[Looker Studio (Dev)]
   Looker --> Extracts[Data Extracts (Prod, 06:30 daily)]
+``` 
 
 ---
 
@@ -207,7 +208,7 @@ graph TD
 ├─ sheets/               # local dev helpers (optional)
 ├─ data/                 # placeholders / examples (gitkept)
 └─ README.md
-
+``` 
 ---
 
 ## ⚙️ Reproduce Locally (Quick Start)
@@ -248,7 +249,7 @@ Looker Studio
 - Convert to Data Extract sources
 
 - Copy to Prod dashboard & set 06:30 daily refresh
-
+``` 
 ---
 
 ## 🧭 Roadmap
