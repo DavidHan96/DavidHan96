@@ -119,8 +119,6 @@ VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns & metrics
 
 ## 🏛️ Warehouse Schema (Snowflake)
 
-<summary><b>Object inventory</b> (click to expand)</summary>
-
 **Schemas**  
 - RAW: `JOB_APPLICATIONS_RAW`, `STUDY_LOG_RAW`  
 - STG: `JOB_APPLICATIONS_STG`, `STUDY_LOG_STG`  
