@@ -30,22 +30,21 @@ End-to-end analytics project demonstrating:
 ---
 
 ## Table of Contents
-- [🎯 Why I Built This](#why)
-- [🚀 Live Dashboards](#dashboards)
-- [🧱 Architecture](#architecture)
-- [📥 Source Data (Google Sheets) & ETL Details](#source-etl)
-- [🧪 Looker Studio Deployment (Dev → Prod)](#looker-deploy)
-- [🏛️ Warehouse Schema (Snowflake)](#schema)
-- [✨ Features](#features)
-- [🛠️ Tech Stack](#tech)
-- [📂 Repository Structure](#repo-structure)
-- [⚙️ Reproduce Locally (Quick Start)](#quickstart)
-- [🧭 Roadmap](#roadmap)
-- [👤 My Role & Contributions](#role)
+- [🎯 Why I Built This](#-why-i-built-this)
+- [🚀 Live Dashboards](#-live-dashboards)
+- [🧱 Architecture](#-architecture)
+- [📥 Source Data (Google Sheets) & ETL Details](#-source-data-google-sheets--etl-details)
+- [🧪 Looker Studio Deployment (Dev → Prod)](#-looker-studio-deployment-dev--prod)
+- [🏛️ Warehouse Schema (Snowflake)](#-warehouse-schema-snowflake)
+- [✨ Features](#-features)
+- [🛠️ Tech Stack](#-tech-stack)
+- [📂 Repository Structure](#-repository-structure)
+- [⚙️ Reproduce Locally (Quick Start)](#-reproduce-locally-quick-start)
+- [🧭 Roadmap](#-roadmap)
+- [👤 My Role & Contributions](#-my-role--contributions)
 
 ---
 
-<a id="why"></a>
 ## 🎯 Why I Built This
 To show hands-on, production-ready skills across the data lifecycle:
 - Data ingestion & transformation with automated loaders  
@@ -55,7 +54,6 @@ To show hands-on, production-ready skills across the data lifecycle:
 
 ---
 
-<a id="dashboards"></a>
 ## 🚀 Live Dashboards
 
 ### 🔹 Job Applications Analytics
@@ -84,7 +82,6 @@ Key views:
 
 ---
 
-<a id="architecture"></a>
 ## 🧱 Architecture
 **Pipeline:**  
 `Google Sheets → ETL (Python) → Snowflake (RAW → STG → FACT/VIEWs) → Looker Studio`
@@ -96,8 +93,6 @@ Raw study & jobs  -->  etl/sheets/load_initial.py   # first bootstrap from Sheet
 STG:  db/stg_load.sql          # typing, cleaning, conforming
 FACT: db/fact_load.sql         # application & study-session grains
 VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns & metrics
-<a id="source-etl"></a>
-
 📥 Source Data (Google Sheets) & ETL Details
 <p align="center"> <img src="dashboards/job_applications/application_google_sheet.png" alt="Job Applications — Google Sheet preview" width="48%" /> <img src="dashboards/study_log/study_log_google_sheet.png" alt="Study Log — Google Sheet preview" width="48%" /> </p>
 ETL details
@@ -112,8 +107,6 @@ Idempotent behavior (dedupe on natural keys), strict types, date normalization
 
 RAW→STG applies casting, trimming, and code mappings; STG→FACT assembles star schema with conformed dimensions
 
-<a id="looker-deploy"></a>
-
 🧪 Looker Studio Deployment (Dev → Prod)
 Build and validate in Dev with live Snowflake connector
 
@@ -122,8 +115,6 @@ Create Data Extract sources and copy to Prod dashboard
 Schedule auto-refresh daily at 06:30 (local) for all extracts to ensure fresh data without live-warehouse cost/latency
 
 Result: Prod dashboards refresh automatically each morning; Dev remains live for iteration
-
-<a id="schema"></a>
 
 🏛️ Warehouse Schema (Snowflake)
 
@@ -149,8 +140,6 @@ graph TD
   FACT --> VIEW[Views (VW_*)]
   VIEW --> Looker[Looker Studio (Dev)]
   Looker --> Extracts[Data Extracts (Prod, 06:30 daily)]
-<a id="features"></a>
-
 ✨ Features
 Common
 
@@ -182,8 +171,6 @@ Parameterized Smart Rankings
 
 Detailed session drilldowns
 
-<a id="tech"></a>
-
 🛠️ Tech Stack
 Warehouse: Snowflake
 
@@ -194,8 +181,6 @@ Modeling: SQL (db/*.sql, STAR schema)
 Visualization: Looker Studio (Data Extract for Prod)
 
 Version Control: GitHub
-
-<a id="repo-structure"></a>
 
 📂 Repository Structure
 text
@@ -225,8 +210,6 @@ Copy code
 ├─ sheets/               # local dev helpers (optional)
 ├─ data/                 # placeholders / examples (gitkept)
 └─ README.md
-<a id="quickstart"></a>
-
 ⚙️ Reproduce Locally (Quick Start)
 Snowflake env
 
@@ -268,8 +251,6 @@ Convert to Data Extract sources
 
 Copy to Prod dashboard & set 06:30 daily refresh
 
-<a id="roadmap"></a>
-
 🧭 Roadmap
 🔹 MCP integration (Model Context Protocol): natural language → parameterized SQL copilot
 
@@ -278,8 +259,6 @@ Copy to Prod dashboard & set 06:30 daily refresh
 🔹 CI/CD (SQL lint, unit tests, freshness checks)
 
 🔹 Ops dashboards (SLA, error surfacing)
-
-<a id="role"></a>
 
 👤 My Role & Contributions
 Designed & implemented the pipeline (Sheets API → Snowflake → Looker Studio)
@@ -291,4 +270,3 @@ Built initial + incremental loaders with idempotent upserts
 Established Dev→Prod deployment using Looker Data Extracts (06:30 daily refresh)
 
 Wrote documentation and organized repo structure
-
