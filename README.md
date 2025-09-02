@@ -142,7 +142,7 @@ graph TD
   RAW --> STG[STG tables]
   STG --> FACT[FACT tables]
   FACT --> VIEW[Reporting Views]
-  VIEW --> Looker[Looker Studio (Dev)]
+  VIEW --> Looker[Looker Studio Dev]
   Looker --> Extracts[Data Extracts (Prod, 06:30 daily)]
 ```
 ---
