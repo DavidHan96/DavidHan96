@@ -119,7 +119,6 @@ VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns & metrics
 
 ## 🏛️ Warehouse Schema (Snowflake)
 
-<details>
 <summary><b>Object inventory</b> (click to expand)</summary>
 
 **Schemas**  
