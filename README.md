@@ -2,12 +2,12 @@
 
 End-to-end data project demonstrating my ability to:
 - Ingest data → Model with a **star schema** → Visualize and operate dashboards.
-- Land pipelines in **Snowflake** and power interactive **Looker Studio dashboards**.
+- Land pipelines in **Snowflake** and power interactive **Looker Studio** dashboards.
 
 ---
 
 ## 🎯 Why I Built This
-To show practical, production-minded skills across the full stack:
+Practical, production-minded skills across the full stack:
 - Data ingestion & transformation  
 - Dimensional modeling (STG → FACT → VIEWs)  
 - Dashboarding with filters, rollups, and smart rankings  
@@ -17,12 +17,10 @@ To show practical, production-minded skills across the full stack:
 
 ## 🚀 Live Dashboards
 
-### 🔹 Job Applications Analytics  
-_End-to-end funnel tracking across role/industry distribution._  
+### 🔹 Job Applications Analytics
+_End-to-end funnel tracking across role/industry distribution._
 
-📷 **Preview**  
-![Job Applications Analytics](dashboards/job_applications/Job_Applications_Analytics.png)  
-[📄 PDF](dashboards/job_applications/Job_Applications_Analytics.pdf) · [🌐 Open in Looker Studio](https://lookerstudio.google.com/u/0/)  
+[![Job Applications Analytics](dashboards/job_applications/Job_Applications_Analytics.png)](https://lookerstudio.google.com/reporting/05a43d81-625f-4196-8616-76beb82abf3a "Open in Looker Studio")
 
 Features:
 - Smart Rankings (companies, counts, averages)  
@@ -32,12 +30,10 @@ Features:
 
 ---
 
-### 🔹 Study Log Analytics  
-_Daily hours & problems solved, with moving averages and category insights._  
+### 🔹 Study Log Analytics
+_Daily hours & problems solved, with moving averages and category insights._
 
-📷 **Preview**  
-![Study Log Analytics](dashboards/study_log/Study_Log_Analytics.png)  
-[📄 PDF](dashboards/study_log/Study_Log_Analytics.pdf) · [🌐 Open in Looker Studio](https://lookerstudio.google.com/u/0/)  
+[![Study Log Analytics](dashboards/study_log/Study_Log_Analytics.png)](https://lookerstudio.google.com/reporting/edeb330e-5a46-4eda-b1e1-1941c14eb872 "Open in Looker Studio")
 
 Features:
 - Daily study hours + 7-day moving averages  
@@ -50,81 +46,85 @@ Features:
 ## 🧱 Architecture
 
 **Pipeline:**  
-`Google Sheets → ETL (Python) → Snowflake (STG/FACT/VIEWs) → Looker Studio`  
+`Google Sheets → ETL (Python) → Snowflake (STG/FACT/VIEWs) → Looker Studio`
 
-Raw study & jobs --> etl/sheets/load_initial.py # bootstrap load
-etl/sheets/incremental_load.py # periodic updates
+```text
+Raw study & jobs  -->  etl/sheets/load_initial.py   # bootstrap load
+                    etl/sheets/incremental_load.py # periodic updates
 
-STG: db/stg_load.sql # typed staging
-FACT: db/fact_load.sql # session/application facts
-VIEWs: db/VW_STUDY_LOG.sql # reporting-friendly views
+STG:  db/stg_load.sql          # typed staging
+FACT: db/fact_load.sql         # session/application facts
+VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns
+📥 Source Data (Google Sheets)
+<p align="center"> <img src="dashboards/job_applications/application_google_sheet.png" alt="Job Applications — Google Sheet preview" width="48%" /> <img src="dashboards/study_log/study_log_google_sheet.png" alt="Study Log — Google Sheet preview" width="48%" /> </p>
+✨ Features
+Common
 
-yaml
+Automated ingestion from Google Sheets
+
+Snowflake warehouse (SQL transformations, window functions, rollups)
+
+Looker Studio dashboards with global filters
+
+Reproducible pipelines + versioned SQL/ETL
+
+Job Applications Analytics
+
+Smart ranking, Funnel conversion
+
+Weekly & cumulative trends
+
+Role/Industry splits
+
+Study Log Analytics
+
+7-day moving averages for hours/problems
+
+Category share with % labels
+
+Parameterized Smart Rankings
+
+Detailed session drilldowns
+
+🛠️ Tech Stack
+Warehouse: Snowflake (window functions, analytic views)
+
+ETL: Python (pandas loaders)
+
+Modeling: SQL (db/*.sql)
+
+Visualization: Looker Studio (filters, parameters, calculated fields)
+
+Version Control: GitHub
+
+📂 Repository Structure
+text
 Copy code
-
----
-
-## ✨ Features
-
-**Common**
-- Automated ingestion from Google Sheets  
-- Snowflake warehouse (SQL transformations, window functions, rollups)  
-- Looker Studio dashboards with global filters  
-- Reproducible pipelines + versioned SQL/ETL  
-
-**Job Applications Analytics**
-- Smart ranking, Funnel conversion  
-- Weekly & cumulative trends  
-- Role/Industry splits  
-
-**Study Log Analytics**
-- 7-day moving averages for hours/problems  
-- Category share with % labels  
-- Parameterized Smart Rankings  
-- Detailed session drilldowns  
-
----
-
-## 🛠️ Tech Stack
-
-- **Warehouse**: Snowflake (window functions, analytic views)  
-- **ETL**: Python (pandas loaders)  
-- **Modeling**: SQL (`db/*.sql`)  
-- **Visualization**: Looker Studio (filters, parameters, calculated fields)  
-- **Version Control**: GitHub  
-
----
-
-## 📂 Repository Structure
-
 .
 ├─ dashboards/
-│ ├─ job_applications/
-│ │ ├─ Job_Applications_Analytics.pdf
-│ │ └─ README.md
-│ ├─ study_log/
-│ │ ├─ Study_Log_Analytics.pdf
-│ │ └─ README.md
-│ └─ README.md # folder index of dashboards
+│  ├─ job_applications/
+│  │  ├─ Job_Applications_Analytics.png
+│  │  ├─ application_google_sheet.png
+│  │  └─ README.md
+│  ├─ study_log/
+│  │  ├─ Study_Log_Analytics.png
+│  │  ├─ study_log_google_sheet.png
+│  │  └─ README.md
+│  └─ README.md                # folder index of dashboards
 ├─ db/
-│ ├─ stg_load.sql # staging transforms
-│ ├─ fact_load.sql # fact transforms
-│ └─ VW_STUDY_LOG.sql # reporting view
+│  ├─ stg_load.sql             # staging transforms
+│  ├─ fact_load.sql            # fact transforms
+│  └─ VW_STUDY_LOG.sql         # reporting view
 ├─ etl/
-│ └─ sheets/
-│ ├─ load_initial.py # one-time bootstrap from Sheets
-│ └─ incremental_load.py # periodic updates
-└─ data/ # placeholders / examples (gitkept)
+│  └─ sheets/
+│     ├─ load_initial.py       # one-time bootstrap from Sheets
+│     └─ incremental_load.py   # periodic updates
+└─ data/                        # placeholders / examples (gitkept)
+⚙️ Reproduce Locally (Quick Start)
+Snowflake
 
-yaml
+bash
 Copy code
-
----
-
-## ⚙️ Reproduce Locally (Quick Start)
-
-### Snowflake  
-```bash
 export SNOWFLAKE_ACCOUNT=...
 export SNOWFLAKE_USER=...
 export SNOWFLAKE_PASSWORD=...
@@ -139,21 +139,22 @@ bash
 Copy code
 python etl/sheets/load_initial.py       # first load
 python etl/sheets/incremental_load.py   # subsequent runs
-SQL Modeling Order
+SQL modeling order
+
 sql
 Copy code
 -- staging
-run db/stg_load.sql
+run db/stg_load.sql;
 
 -- facts
-run db/fact_load.sql
+run db/fact_load.sql;
 
 -- views
-run db/VW_STUDY_LOG.sql
+run db/VW_STUDY_LOG.sql;
 Then connect Looker Studio → Snowflake Views → Publish 🚀
 
 🧭 Roadmap
-🔹 MCP integration (Model Context Protocol) → Natural Language → SQL copilots
+🔹 MCP integration (Model Context Protocol): Natural Language → SQL copilots
 
 🔹 dbt migration (tests, docs, environments)
 
@@ -168,20 +169,6 @@ Authored staging/fact SQL, reporting views, and dashboards
 
 Built ETL scripts for initial & incremental loads
 
-Designed UX consistency (Google palette, filters, Smart Rankings)
+UX consistency (Google palette, filters, Smart Rankings)
 
-Wrote docs and automated exports (PDFs in dashboards/*)
-
-📫 Contact: David.smh.han@gmail.com
-💬 Questions or collaboration ideas? Open an issue, or reach me on GitHub @DavidHan96.
-
-yaml
-Copy code
-
----
-
-👉 Notes for you:  
-- I referenced the uploaded **PDF dashboards** ([Job Applications:contentReference[oaicite:0]{index=0}, Study Log:contentReference[oaicite:1]{index=1}]) for links. You can export thumbnails (`.png`) from the PDFs and drop them into `dashboards/job_applications/` and `dashboards/study_log/`.  
-- That way, your README shows **inline preview images** like the Calligo repo you liked.  
-
-Do you want me to also **generate those PNG thumbnails** for you from the PDFs, so you can just commit them?
+Wrote docs and automated exports
