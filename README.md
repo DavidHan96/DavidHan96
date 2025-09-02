@@ -135,8 +135,6 @@ VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns & metrics
 `VW_JOB_APPLICATIONS`, `VW_JOB_APPLICATIONS_AGG`, `VW_JOB_APPLICATIONS_FUNNEL`, `VW_STUDY_LOG`  
 
 ![Snowflake Schema](assets/img/snowflake_schema.png)
-</details>
-
 
 ---
 
