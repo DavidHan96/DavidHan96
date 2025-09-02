@@ -134,17 +134,10 @@ VIEW: db/VW_STUDY_LOG.sql      # reporting-friendly columns & metrics
 **ANALYTICS (views):**  
 `VW_JOB_APPLICATIONS`, `VW_JOB_APPLICATIONS_AGG`, `VW_JOB_APPLICATIONS_FUNNEL`, `VW_STUDY_LOG`  
 
+![Snowflake Schema](assets/img/snowflake_schema.png)
 </details>
 
-```mermaid
-graph TD
-  Sheets[Google Sheets] --> RAW[RAW tables]
-  RAW --> STG[STG tables]
-  STG --> FACT[FACT tables]
-  FACT --> VIEW[Reporting Views]
-  VIEW --> Looker[Looker Studio Dev]
-  Looker --> Extracts[Data Extracts (Prod, 06:30 daily)]
-```
+
 ---
 
 ## ✨ Features
