@@ -1,107 +1,130 @@
-David’s Analytics Dashboards Portfolio
+# 📊 David’s Analytics Dashboards Portfolio
 
-End-to-end data project demonstrating my ability to ingest data → model with a star schema → visualize and operate dashboards.
-Pipelines land in Snowflake and power interactive Looker Studio dashboards.
+End-to-end data project demonstrating my ability to:
+- Ingest data → Model with a **star schema** → Visualize and operate dashboards.
+- Land pipelines in **Snowflake** and power interactive **Looker Studio dashboards**.
 
-Why I built this
-To show practical, production-minded skills across the full stack: data ingestion, transformation, dimensional modeling, and dashboarding—all automated and version-controlled.
+---
 
-🚀 Live Dashboards
+## 🎯 Why I Built This
+To show practical, production-minded skills across the full stack:
+- Data ingestion & transformation  
+- Dimensional modeling (STG → FACT → VIEWs)  
+- Dashboarding with filters, rollups, and smart rankings  
+- All **automated and version-controlled**  
 
-Job Applications Analytics → Open README
+---
 
-(smart rankings, funnel, weekly trend, role/industry distribution)
+## 🚀 Live Dashboards
 
-Study Log Analytics → Open in Looker Studio
- · Project README
+### 🔹 Job Applications Analytics  
+_End-to-end funnel tracking across role/industry distribution._  
 
-(daily hours & problems solved with 7-day moving average, category share, smart rankings, session details)
+📷 **Preview**  
+![Job Applications Analytics](dashboards/job_applications/Job_Applications_Analytics.png)  
+[📄 PDF](dashboards/job_applications/Job_Applications_Analytics.pdf) · [🌐 Open in Looker Studio](https://lookerstudio.google.com/u/0/)  
 
-🧱 Architecture (Sheets → Snowflake → Looker Studio)
-Google Sheets          ETL (Python)                 Snowflake                     Looker Studio
-------------------     -------------------------    ---------------------------    ----------------------------
-Raw study & jobs  -->  etl/sheets/load_initial.py   RAW / STG schemas             Interactive dashboards
-(appendable logs)      etl/sheets/incremental_load.py
-                       db/stg_load.sql
-                       db/fact_load.sql             FACT tables
-                                                   + Views (VW_* for reporting)
+Features:
+- Smart Rankings (companies, counts, averages)  
+- Application funnel (applied → interviewed → offer)  
+- Weekly & cumulative trends  
+- Role/Industry distributions  
 
+---
 
-Modeling approach
+### 🔹 Study Log Analytics  
+_Daily hours & problems solved, with moving averages and category insights._  
 
-STG: cleaned, typed staging tables
+📷 **Preview**  
+![Study Log Analytics](dashboards/study_log/Study_Log_Analytics.png)  
+[📄 PDF](dashboards/study_log/Study_Log_Analytics.pdf) · [🌐 Open in Looker Studio](https://lookerstudio.google.com/u/0/)  
 
-FACT: session/application grain facts with consistent keys
+Features:
+- Daily study hours + 7-day moving averages  
+- Category share donut (Google color palette)  
+- Smart Rankings (Hours / Problems / Difficulty)  
+- Session-level details  
 
-VIEWs: reporting-friendly columns (derived metrics, mappings, rolling averages)
+---
 
-✨ Features
-Common
+## 🧱 Architecture
 
-Automated ingestion from Google Sheets
+**Pipeline:**  
+`Google Sheets → ETL (Python) → Snowflake (STG/FACT/VIEWs) → Looker Studio`  
 
-Snowflake as the warehouse (SQL transformations, window functions, rollups)
+Raw study & jobs --> etl/sheets/load_initial.py # bootstrap load
+etl/sheets/incremental_load.py # periodic updates
 
-Looker Studio dashboards with global date/category filters
+STG: db/stg_load.sql # typed staging
+FACT: db/fact_load.sql # session/application facts
+VIEWs: db/VW_STUDY_LOG.sql # reporting-friendly views
 
-Reproducible pipeline + versioned SQL/ETL in Git
+yaml
+Copy code
 
-Job Applications Analytics
+---
 
-Smart ranking (companies, counts, averages)
+## ✨ Features
 
-Funnel (applied → interviewed → offer)
+**Common**
+- Automated ingestion from Google Sheets  
+- Snowflake warehouse (SQL transformations, window functions, rollups)  
+- Looker Studio dashboards with global filters  
+- Reproducible pipelines + versioned SQL/ETL  
 
-Weekly & cumulative trends
+**Job Applications Analytics**
+- Smart ranking, Funnel conversion  
+- Weekly & cumulative trends  
+- Role/Industry splits  
 
-Role/industry distributions
+**Study Log Analytics**
+- 7-day moving averages for hours/problems  
+- Category share with % labels  
+- Parameterized Smart Rankings  
+- Detailed session drilldowns  
 
-Study Log Analytics
+---
 
-Daily study hours & problems solved + 7-day moving averages
+## 🛠️ Tech Stack
 
-Category share donut (Google color palette)
+- **Warehouse**: Snowflake (window functions, analytic views)  
+- **ETL**: Python (pandas loaders)  
+- **Modeling**: SQL (`db/*.sql`)  
+- **Visualization**: Looker Studio (filters, parameters, calculated fields)  
+- **Version Control**: GitHub  
 
-Smart Rankings with parameterized sorting (Hours / Problems / Difficulty)
+---
 
-Session-level details table (date, category, topic, provider, difficulty)
+## 📂 Repository Structure
 
-🛠️ Tech Stack
-
-Warehouse: Snowflake (WINDOW functions, analytic views)
-
-ETL: Python (pandas) + simple loaders (etl/sheets/*.py)
-
-Modeling: SQL in db/*.sql (STG, FACT, and reporting VIEWs)
-
-Viz: Looker Studio (filters, parameters, calculated fields)
-
-VCS: GitHub
-
-📁 Repository Structure
 .
 ├─ dashboards/
-│  ├─ job_applications/
-│  │  ├─ Job_Applications_Analytics.pdf
-│  │  └─ README.md
-│  ├─ study_log/
-│  │  ├─ Study_Log_Analytics.pdf
-│  │  └─ README.md
-│  └─ README.md                # folder index of dashboards
+│ ├─ job_applications/
+│ │ ├─ Job_Applications_Analytics.pdf
+│ │ └─ README.md
+│ ├─ study_log/
+│ │ ├─ Study_Log_Analytics.pdf
+│ │ └─ README.md
+│ └─ README.md # folder index of dashboards
 ├─ db/
-│  ├─ stg_load.sql             # staging transforms
-│  ├─ fact_load.sql            # fact transforms
-│  └─ VW_STUDY_LOG.sql         # reporting view (rolling avgs, category share, etc.)
+│ ├─ stg_load.sql # staging transforms
+│ ├─ fact_load.sql # fact transforms
+│ └─ VW_STUDY_LOG.sql # reporting view
 ├─ etl/
-│  └─ sheets/
-│     ├─ load_initial.py       # one-time bootstrap from Sheets
-│     └─ incremental_load.py   # small periodic updates
-└─ data/                        # placeholders / examples (gitkept)
+│ └─ sheets/
+│ ├─ load_initial.py # one-time bootstrap from Sheets
+│ └─ incremental_load.py # periodic updates
+└─ data/ # placeholders / examples (gitkept)
 
-⚙️ Reproduce Locally (quick start)
+yaml
+Copy code
 
-Snowflake env vars (or use a .env):
+---
 
+## ⚙️ Reproduce Locally (Quick Start)
+
+### Snowflake  
+```bash
 export SNOWFLAKE_ACCOUNT=...
 export SNOWFLAKE_USER=...
 export SNOWFLAKE_PASSWORD=...
@@ -109,78 +132,56 @@ export SNOWFLAKE_WAREHOUSE=...
 export SNOWFLAKE_ROLE=...
 export SNOWFLAKE_DATABASE=JOBDASH
 export SNOWFLAKE_SCHEMA=ANALYTICS
+Google Sheets
+Provide the Sheet IDs/creds in etl/sheets/*.py, then run:
 
-
-Google Sheets: provide the Sheet IDs/creds in the ETL scripts (see etl/sheets/*.py), then run:
-
+bash
+Copy code
 python etl/sheets/load_initial.py       # first load
 python etl/sheets/incremental_load.py   # subsequent runs
-
-
-SQL modeling (order):
-
+SQL Modeling Order
+sql
+Copy code
 -- staging
--- run contents of db/stg_load.sql
+run db/stg_load.sql
 
 -- facts
--- run contents of db/fact_load.sql
+run db/fact_load.sql
 
--- views (example)
--- run contents of db/VW_STUDY_LOG.sql
-
-
-Connect Looker Studio to the Snowflake views and publish.
-
-🔍 Example: Study Log reporting view
-
-db/VW_STUDY_LOG.sql produces the fields used by the dashboard, including:
-
-ROLLING_7D_AVG_HOURS, ROLLING_7D_AVG_PROBLEMS
-
-CATEGORY_SHARE (nice label like “Data Engineering (54.5%)”)
-
-DIFFICULTY_SCORE mapping, IS_PROJECT, PROJECT_HOURS, etc.
+-- views
+run db/VW_STUDY_LOG.sql
+Then connect Looker Studio → Snowflake Views → Publish 🚀
 
 🧭 Roadmap
+🔹 MCP integration (Model Context Protocol) → Natural Language → SQL copilots
 
-MCP integration (Model Context Protocol)
+🔹 dbt migration (tests, docs, environments)
 
-Connect Snowflake to GenAI copilots (GPT, Claude, Gemini) via MCP
+🔹 CI/CD checks (SQL lint, unit tests, data freshness SLAs)
 
-Secure, auditable access patterns for data-aware assistants
-
-Natural Language → SQL
-
-NL prompts into parameterized, reviewable SQL against the warehouse
-
-Guardrails + query templates; explain plans + cost hints in UI
-
-dbt migration
-
-Port stg_* / fact_* SQL to dbt with tests, docs, and environments
-
-CI/CD
-
-Lightweight checks (SQL lint, unit tests for Python loaders)
-
-Operational dashboards
-
-Data freshness KPIs, SLA monitors, load error surfacing
+🔹 Operational dashboards (SLA monitors, error surfacing)
 
 👤 My Role & Contributions
+Designed & implemented full pipeline (Sheets → Snowflake → Looker Studio)
 
-Designed & implemented the end-to-end pipeline (Sheets → Snowflake → Looker Studio)
-
-Authored staging/fact SQL, reporting views, and parameterized dashboard logic
+Authored staging/fact SQL, reporting views, and dashboards
 
 Built ETL scripts for initial & incremental loads
 
-Set up color/UX consistency (Google palette), filters, and smart rankings
+Designed UX consistency (Google palette, filters, Smart Rankings)
 
-Wrote documentation and automated exports (PDFs in dashboards/*)
+Wrote docs and automated exports (PDFs in dashboards/*)
 
-📫 Contact
+📫 Contact: David.smh.han@gmail.com
+💬 Questions or collaboration ideas? Open an issue, or reach me on GitHub @DavidHan96.
 
-Questions or collaboration ideas? Open an issue, or reach me on GitHub @DavidHan96.
+yaml
+Copy code
 
-If you want, I can also generate a compact badge row (tech stack) or add thumbnail images of each dashboard at the top.
+---
+
+👉 Notes for you:  
+- I referenced the uploaded **PDF dashboards** ([Job Applications:contentReference[oaicite:0]{index=0}, Study Log:contentReference[oaicite:1]{index=1}]) for links. You can export thumbnails (`.png`) from the PDFs and drop them into `dashboards/job_applications/` and `dashboards/study_log/`.  
+- That way, your README shows **inline preview images** like the Calligo repo you liked.  
+
+Do you want me to also **generate those PNG thumbnails** for you from the PDFs, so you can just commit them?
