@@ -141,11 +141,10 @@ graph TD
   Sheets[Google Sheets] --> RAW[RAW tables]
   RAW --> STG[STG tables]
   STG --> FACT[FACT tables]
-  FACT --> VIEW[Views (VW_*)]
+  FACT --> VIEW[Reporting Views]
   VIEW --> Looker[Looker Studio (Dev)]
   Looker --> Extracts[Data Extracts (Prod, 06:30 daily)]
-``` 
-
+```
 ---
 
 ## ✨ Features
